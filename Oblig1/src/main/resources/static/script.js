@@ -83,38 +83,55 @@ function validateEpost(epost) {
 
 //Purchase movie ticket
 objArray= [];
-function addTicket(){
+function addTicket() {
     let film = document.getElementById("film").value;
     let antall = document.getElementById("antall").value;
     let fornavn = document.getElementById("fornavn").value;
     let etternavn = document.getElementById("etternavn").value;
     let telefonnr = document.getElementById("telefonnr").value;
     let epost = document.getElementById("epost").value;
+    // Validate input fields
     if (!validateFilm(film, "film")) return;
     if (!validateAntall(antall, "antall")) return;
     if (!validateFornavn(fornavn, "fornavn")) return;
     if (!validateEtternavn(etternavn, "etternavn")) return;
     if (!validateTelefonnr(telefonnr, "telefonnr")) return;
     if (!validateEpost(epost)) return;
-    objArray.push({filmKey:film, antallKey:antall, fornavnKey:fornavn, etternavnKey:etternavn, telefonnrKey:telefonnr, epostKey:epost})
-    console.log(objArray);
-    populateHTML(objArray);
+    // Object with data
+    let ticket = {
+        "film": document.getElementById("film").value,
+        "antall": document.getElementById("antall").value,
+        "fornavn": document.getElementById("fornavn").value,
+        "etternavn": document.getElementById("etternavn").value,
+        "telefonnr": document.getElementById("telefonnr").value,
+        "epost": document.getElementById("epost").value,
+    }
+
+    // Send the data to the server using $.post
+    console.log(ticket);
+    $.post("http://localhost:8080/receiveTicket", ticket, function (data) {
+        fetchAll();
+    });
 
     //Reset the form fields after adding the film
     resetForm();
 }
+function fetchAll() {
+    $.get("/fetchAll", function (ticket) {
+        updateTable(ticket);
+    });
+}
 
-//List purchased movie tickets
-function populateHTML(objArr){
-    let html = "<ol>";
-    console.log(objArr)
-    for(let i in objArr){
-        console.log(objArr[i].fornavnKey)
-        html += "<li>" + objArr[i].filmKey+ " " + objArr[i].antallKey+ " " +objArr[i].fornavnKey+ " " + objArr[i].etternavnKey+ " " + objArr[i].telefonnrKey+ " " + objArr[i].epostKey+ "</li>"
+function updateTable(ticket) {
+    let output = "<table class=\"table table-hover\"><thead><tr><th>Film</th><th>Antall</th><th>Fornavn</th>" +
+        "<th>Etternavn</th><th>Telefonnr</th><th>Epost</th></tr></thead><tbody>";
+
+    for (const data of ticket) {
+        output += "<tr><td>" + data.film + "</td><td>" + data.antall + "</td><td>" + data.fornavn + "</td>" +
+            "<td>" + data.etternavn + "</td><td>" + data.telefonnr + "</td><td>" + data.epost + "</td></tr>";
     }
-    html+="</ol>"
-    document.getElementById("resultObject").innerHTML = html;
-    console.log(html)
+    output += "</tbody></table>";
+    $("#resultObject").html(output);
 }
 
 // Reset form input fields
@@ -123,7 +140,8 @@ function resetForm() {
 }
 
 //Delete all tickets
-function emptyArray() {
-    objArray.length = 0;
-    document.getElementById('resultObject').innerHTML = '';
+function deleteAll() {
+    $.get( "/deleteAll", function() {
+        fetchAll();
+    });
 }
