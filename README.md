@@ -1,4 +1,4 @@
-## **Oblig 1**
+## **Oblig**
 This is a JavaScript application designed to purchase cinema tickets. Users can select the movies that are currently being shown, select tickets and complete their purchase by entering their personal details. The output generates a list of tickets.
 
 ## Usage
