@@ -1,30 +1,36 @@
 package com.example.oblig1;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class TicketController {
 
-    public final List<Ticket> ticketPurchase = new ArrayList<>();
+    @Autowired
+    TicketRepository rep;
 
     @PostMapping("/receiveTicket")
-    public void receiveTicket(Ticket ticket) {
-        ticketPurchase.add(ticket);
-        System.out.println("Received ticket: " + ticket);
+    public void receiveTicket(Ticket inputTicket) {
+        rep.saveTicket(inputTicket);
+        System.out.println("Received ticket: " + inputTicket);
     }
 
     @GetMapping("/fetchAll")
     public List<Ticket> fetchAll(){
-        return ticketPurchase;
+        return rep.showAllTickets();
     }
 
     @GetMapping("/deleteAll")
     public void deleteAll(){
-        ticketPurchase.clear();
+        rep.deleteAllTickets();
+    }
+
+   @GetMapping("/deleteTicket")
+    public void deleteTicket(int id){
+        rep.deleteTicket(id);
     }
 }

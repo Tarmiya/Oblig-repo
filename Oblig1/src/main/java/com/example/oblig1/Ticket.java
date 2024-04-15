@@ -15,4 +15,6 @@ public class Ticket {
     private String etternavn;
     private String telefonnr;
     private String epost;
+    private Integer id;
 }
+

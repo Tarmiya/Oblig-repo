@@ -124,11 +124,17 @@ function fetchAll() {
 
 function updateTable(ticket) {
     let output = "<table class=\"table table-hover\"><thead><tr><th>Film</th><th>Antall</th><th>Fornavn</th>" +
-        "<th>Etternavn</th><th>Telefonnr</th><th>Epost</th></tr></thead><tbody>";
+        "<th>Etternavn</th><th>Telefonnr</th><th>Epost</th><th></th></tr></thead><tbody>";
 
     for (const data of ticket) {
-        output += "<tr><td>" + data.film + "</td><td>" + data.antall + "</td><td>" + data.fornavn + "</td>" +
-            "<td>" + data.etternavn + "</td><td>" + data.telefonnr + "</td><td>" + data.epost + "</td></tr>";
+        output += "<tr><td>" + data.film +
+            "</td><td>" + data.antall +
+            "</td><td>" + data.fornavn +
+            "</td><td>" + data.etternavn +
+            "</td><td>" + data.telefonnr +
+            "</td><td>" + data.epost +
+            "</td><td> <button class='btn btn-danger btn-sm' onclick='deleteTicket(" + data.id + ")'>Slett</button>" +
+            "</td></tr>";
     }
     output += "</tbody></table>";
     $("#resultObject").html(output);
@@ -137,6 +143,14 @@ function updateTable(ticket) {
 // Reset form input fields
 function resetForm() {
     document.getElementById('Kinobillet').reset();
+}
+
+//Delete a single ticket
+function deleteTicket(id) {
+    const url = "/deleteTicket?id=" + id;
+    $.get(url, function() {
+        fetchAll();
+    });
 }
 
 //Delete all tickets
